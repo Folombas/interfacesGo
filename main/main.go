@@ -1,43 +1,40 @@
 package main
-
-// Зарядка электро-устройств
+// Аналог: Связка ключей — разные замки открываются разными ключами, но принцип один.
 import "fmt"
 
-// Всё, что можно заряжать
-type Charger interface {
-	Charge() string
+// Всё, что можно открыть ключом
+type Lock interface {
+	Open(key string) string
 }
 
-// Телефон
-type Phone struct{}
+// Дверь дома
+type HouseDoor struct {}
 
-func (p Phone) Charge() string {
-	return "Телефон заряжается 🔋"
+func (d HouseDoor) Open(key string) string {
+	if key == "Домашний ключ" {
+		return "Дверь открыта!"
+	}
+	return "Неверный ключ для двери дома!"
 }
 
-// Ноутбук
-type Laptop struct{}
-
-func (l Laptop) Charge() string {
-	return "Ноутбук заряжается 💻"
+// Сейф
+type Safe struct {
+	Code int
 }
 
-// Электроавтомобиль
-type EV struct {
-	Model string
+func (s Safe) Open(key string) string {
+	if key == "Секретный код" {
+		return fmt.Sprintf("Сейф с кодом %d открыт!", s.Code)
+	}
+	return "Неверный ключ для сейфа!"
 }
 
-func (e EV) Charge() string {
-	return fmt.Sprintf("%s заряжается 🚗⚡", e.Model)
-}
-
-// Зарядная станция
-func ChargeDevice(device Charger) {
-	fmt.Println(device.Charge())
+func TryOpen(lock Lock, key string) {
+	fmt.Println(lock.Open(key))
 }
 
 func main() {
-	ChargeDevice(Phone{})
-	ChargeDevice(Laptop{})
-	ChargeDevice(EV{"Tesla Model S"})
+	TryOpen(HouseDoor{}, "Домашний ключ")
+	TryOpen(Safe{Code: 1234}, "пароль")
+	TryOpen(Safe{Code: 5678}, "Секретный код")
 }
