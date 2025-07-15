@@ -1,45 +1,43 @@
 package main
 
+// Зарядка электро-устройств
 import "fmt"
 
-// Интерфейс - всё, что можно "нажать"
-type Button interface {
-	Press() string
+// Всё, что можно заряжать
+type Charger interface {
+	Charge() string
 }
 
-// Реальная кнопка
-type PhysicalButton struct{}
+// Телефон
+type Phone struct{}
 
-func (b PhysicalButton) Press() string {
-	return "Щёлк!"
+func (p Phone) Charge() string {
+	return "Телефон заряжается 🔋"
 }
 
-// Экранная кнопка
-type TouchButton struct{}
+// Ноутбук
+type Laptop struct{}
 
-func (b TouchButton) Press() string {
-	return "Тач!"
+func (l Laptop) Charge() string {
+	return "Ноутбук заряжается 💻"
 }
 
-// Кнопка на клавиатуре
-type KeyboardButton struct {
-	Key string
+// Электроавтомобиль
+type EV struct {
+	Model string
 }
 
-func (b KeyboardButton) Press() string {
-	return fmt.Sprintf("Нажата клавиша %s", b.Key)
+func (e EV) Charge() string {
+	return fmt.Sprintf("%s заряжается 🚗⚡", e.Model)
+}
+
+// Зарядная станция
+func ChargeDevice(device Charger) {
+	fmt.Println(device.Charge())
 }
 
 func main() {
-	buttons := []Button{
-		PhysicalButton{},
-		TouchButton{},
-		KeyboardButton{Key: "Enter"},
-		KeyboardButton{Key: "Shift"},
-		KeyboardButton{Key: "Tab"},
-	}
-
-	for _, button := range buttons {
-		fmt.Println(button.Press())
-	}
+	ChargeDevice(Phone{})
+	ChargeDevice(Laptop{})
+	ChargeDevice(EV{"Tesla Model S"})
 }
