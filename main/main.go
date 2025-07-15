@@ -1,79 +1,45 @@
 package main
 
-// Цель - показать, как интерфейс заставляет разные объекты
-// делать одно и то же действие по-своему.
 import "fmt"
 
-// 1. Объявляем интерфейс - "контракт" для всех говорящих существ
-type Speaker interface {
-	Speak() string // Всё, что умеет говорить, должно иметь метод Speak()
+// Интерфейс - всё, что можно "нажать"
+type Button interface {
+	Press() string
 }
 
-// 2. Создаём разные типы животных (каждый - отдельный тип)
+// Реальная кнопка
+type PhysicalButton struct{}
 
-// Собака
-type Dog struct {
-	Name string
+func (b PhysicalButton) Press() string {
+	return "Щёлк!"
 }
 
-// Метод Speak() для собаки
-func (d Dog) Speak() string {
-	return "Гав! Меня зовут " + d.Name
+// Экранная кнопка
+type TouchButton struct{}
+
+func (b TouchButton) Press() string {
+	return "Тач!"
 }
 
-// Кот
-type Cat struct {
-	Name string
+// Кнопка на клавиатуре
+type KeyboardButton struct {
+	Key string
 }
 
-// Метод Speak() для кота (своя реализация)
-func (c Cat) Speak() string {
-	return "Мяу! Меня зовут " + c.Name
-}
-
-// Утка
-type Duck struct {
-	Name string
-}
-
-// Метод Speak() для утки (своя реализация)
-func (d Duck) Speak() string {
-	return "Кря! Меня зовут " + d.Name
-}
-
-// Лиса
-type Fox struct {}
-
-func (f Fox) Speak() string {
-	return "Фыр! Что сказала лиса?"
-}
-
-// Корова
-type Cow struct {
-	Name string
-}
-
-func (c Cow) Speak() string {
-	return "Муууу! Меня зовут " + c.Name
-}
-
-// 3. Главная магия: функция, работающая с ЛЮБЫМ объектом, который реализует интерфейс Speaker
-func MakeSpeak(s Speaker) {
-	fmt.Println(s.Speak())
+func (b KeyboardButton) Press() string {
+	return fmt.Sprintf("Нажата клавиша %s", b.Key)
 }
 
 func main() {
-	// Создаём животных
-	rex := Dog{Name: "Рекс"}
-	murka := Cat{Name: "Мурка"}
-	donald := Duck{Name: "Дональд"}
-	burenka := Cow{Name: "Бурёнкаё"}
+	buttons := []Button{
+		PhysicalButton{},
+		TouchButton{},
+		KeyboardButton{Key: "Enter"},
+		KeyboardButton{Key: "Shift"},
+		KeyboardButton{Key: "Tab"},
+	}
 
-	// 4. Собираем их в один список через интерфейс
-	zoo := []Speaker{rex, murka, donald, Fox{}, burenka}
-
-	// 5. Заставляем всех говорить одной командой!
-	for _, animal := range zoo {
-		MakeSpeak(animal)
+	for _, button := range buttons {
+		fmt.Println(button.Press())
 	}
 }
