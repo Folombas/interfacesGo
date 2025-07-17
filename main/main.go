@@ -1,40 +1,78 @@
 package main
-// Аналог: Связка ключей — разные замки открываются разными ключами, но принцип один.
+
 import "fmt"
 
-// Всё, что можно открыть ключом
-type Lock interface {
-	Open(key string) string
+// Объявляем интерфейс Flyer с методом Fly()
+type Flyer interface {
+	Fly() string
 }
 
-// Дверь дома
-type HouseDoor struct {}
-
-func (d HouseDoor) Open(key string) string {
-	if key == "Домашний ключ" {
-		return "Дверь открыта!"
-	}
-	return "Неверный ключ для двери дома!"
+// Структура Bird с собственным методом Fly()
+type Bird struct {
+	Name  string
+	Wings int
 }
 
-// Сейф
-type Safe struct {
-	Code int
+func (b Bird) Fly() string {
+	return fmt.Sprintf("%s летит, махая %d крыльями", b.Name, b.Wings)
 }
 
-func (s Safe) Open(key string) string {
-	if key == "Секретный код" {
-		return fmt.Sprintf("Сейф с кодом %d открыт!", s.Code)
-	}
-	return "Неверный ключ для сейфа!"
+// Структура Airplane с собственным методом Fly()
+type Airplane struct {
+	Model string
 }
 
-func TryOpen(lock Lock, key string) {
-	fmt.Println(lock.Open(key))
+func (a Airplane) Fly() string {
+	return fmt.Sprintf("Самолет %s летит на реактивной тяге", a.Model)
+}
+
+// Структура Superman (демонстрация неявной реализации)
+type Superman struct {
+	PowerLevel int
+}
+
+func (s Superman) Fly() string {
+	return fmt.Sprintf("Супермен летит с силой %d%%", s.PowerLevel)
+}
+
+// Функция принимающая ЛЮБОЙ объект, реализующий Flyer
+func StartFlight(f Flyer) {
+	fmt.Println(f.Fly())
 }
 
 func main() {
-	TryOpen(HouseDoor{}, "Домашний ключ")
-	TryOpen(Safe{Code: 1234}, "пароль")
-	TryOpen(Safe{Code: 5678}, "Секретный код")
+	// Создаем объекты разных типов
+	sparrow := Bird{"Воробей", 2}
+	boeing := Airplane{"Boeing 747"}
+	clark := Superman{100}
+
+	// Вызываем метод Fly() напрямую
+	fmt.Println(sparrow.Fly())
+	fmt.Println(boeing.Fly())
+	fmt.Println(clark.Fly())
+
+	fmt.Println("\nЧерез интерфейс:")
+	// Используем интерфейсный тип
+	var flyer Flyer
+
+	flyer = sparrow // Bird реализует Flyer
+	StartFlight(flyer)
+
+	flyer = boeing // Airplane реализует Flyer
+	StartFlight(flyer)
+
+	flyer = clark // Superman реализует Flyer
+	StartFlight(flyer)
+
+	// Демонстрация полиморфизма
+	fmt.Println("\nПолиморфизм в срезе:")
+	flyingObjects := []Flyer{
+		Bird{"Орел", 2},
+		Airplane{"Сухой Суперджет"},
+		Superman{85},
+	}
+
+	for _, obj := range flyingObjects {
+		fmt.Println(obj.Fly())
+	}
 }
